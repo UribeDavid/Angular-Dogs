@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" *ngIf="dogRazaList.length > 0">
   <div class="col-12">
     <table class="table">
       <thead>
@@ -10,15 +10,20 @@
           <th scope="col">Acciones</th>
         </tr>
       </thead>
-      <tbody *ngFor="let i of dogs; let index = index">
-        <th scope="row"><img src="{{i.img}}" style="max-height: 100px; max-width: 100px;" alt=""></th>
-        <td>{{ i.raza | uppercase}}</td>
-        <td>{{i.cantidad}}</td>
+      <tbody *ngFor="let i of dogRazaList; let index = index">
+        <th scope="row">{{ index+1 }}</th>
+        <td>{{ i.nombre }}</td>
+        <td>{{i.fechaNacimiento}}</td>
+        <td>{{i.edad}} años</td>
         <td>
-          <button class="btn btn-primary">Editar</button>
-          <button class="btn btn-danger ml-2">Eliminarr</button>
+          <button class="btn btn-primary" (click)="editar(index)">Editar</button>
+          <button class="btn btn-danger ml-2" (click)="eliminar(index)">Eliminar</button>
         </td>
       </tbody>
     </table>
   </div>
 </div>
+<div *ngIf="dogRazaList.length === 0">
+  <h1>No se encontraron perros de la raza seleccionada!</h1>
+</div>
+

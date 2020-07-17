@@ -1,46 +1,49 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Dog } from '../dog.model';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-dog-edit',
   templateUrl: './dog-edit.component.html'
 })
 export class DogEditComponent implements OnInit{
+
+  dogEditForm: FormGroup;
+  perroAEditar: Dog;
+  idRaza: number;
+  idPerro: number;
   raza: string;
-  dogs: any = [];
-  dogForm: FormGroup;
-  id: number;
 
-  constructor(private router: Router, private route: ActivatedRoute){
-    // localStorage.removeItem('raza');
-    this.raza = JSON.parse(localStorage.getItem('razaSeleccionada'));
-    this.dogs = JSON.parse(localStorage.getItem('raza'));
-
-
-
-  }
+  constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
-    this.dogForm = new FormGroup({
-      'nombre': new FormControl(null, [Validators.required]),
-      'fechaNacimiento': new FormControl(null, [Validators.required])
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.idRaza = params['idRaza'];
+        this.idPerro = params['idPerro']
+      }
+    )
+    this.raza = JSON.parse(localStorage.getItem('razaSeleccionada'));
+    this.perroAEditar = JSON.parse(localStorage.getItem('perroEditar'));
+    this.dogEditForm = new FormGroup({
+      'nombre': new FormControl(this.perroAEditar.nombre, [Validators.required]),
+      'fechaNacimiento': new FormControl(this.perroAEditar.fechaNacimiento, [Validators.required])
     });
   }
 
-  onAgregar() {
-    //Capturar el index del la url
-    this.route.params.subscribe(
-      (params: Params) => {
-        this.id = +params['id'];
-      }
-    );
-    // Eliminar raza seleccionada
-    // localStorage.removeItem('razaSeleccionada');
-    //Cantidad del formulario
-    this.dogs[this.id].cantidad = 20;
-    localStorage.setItem('raza', JSON.stringify(this.dogs));
-    //Router devolver al home
-    //this.router.navigate(['dogs']);
+  guardar() {
+    let perros = JSON.parse(localStorage.getItem('raza'));
+    const fechaNacimiento = moment(this.dogEditForm.value['fechaNacimiento']).format('YYYY-MM-DD');
+    const edad = moment().diff(fechaNacimiento, 'years');
+    perros[this.idRaza].perrosPorRaza[this.idPerro] = {
+      nombre: this.dogEditForm.value['nombre'],
+      fechaNacimiento: fechaNacimiento,
+      edad
+    }
+    localStorage.setItem('raza', JSON.stringify(perros));
+    localStorage.removeItem('razaSeleccionada');
+    this.router.navigate(['/razas']);
   }
 }

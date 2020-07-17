@@ -6,13 +6,8 @@ import { DataService } from '../data.service';
   templateUrl: './dogs.component.html'
 })
 export class DogsComponent {
-  constructor(private dataService: DataService) {}
+  constructor() {}
 
   onFetchDogs() {
-    console.log('Fetching dogs!');
-    console.log(this.dataService.getDogs().subscribe(
-      resp => console.log(resp),
-      error => console.log(error)
-    ));
   }
 }

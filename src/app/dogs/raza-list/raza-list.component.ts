@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ɵConsole } from '@angular/core';
 import { DataService } from 'src/app/data.service';
 import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-raza-list',
@@ -11,7 +11,7 @@ export class RazaListComponent implements OnInit, OnDestroy {
 
   subscription: Subscription;
 
-  constructor(private dataService: DataService, private router: Router) {}
+  constructor(private dataService: DataService, private router: Router/* , private route: ActivatedRoute */) {}
   dogs: any = [/*
     { imagen: 'vacio', nombreDeRaza: 'affenpinscher', cantidadDePerros: 1 },
     { imagen: 'vacio', nombreDeRaza: 'african', cantidadDePerros: 2 },
@@ -34,9 +34,8 @@ export class RazaListComponent implements OnInit, OnDestroy {
     this.subscription = this.dataService.getDogs().subscribe(
       response => {
         for (const i of Object.keys(response.message)) {
-          // this.dogs.push(i);
           this.dataService.getDogImage(i).subscribe(
-            resp =>  this.dogs.push({raza: i, img : resp.message, cantidad: 0 })
+            resp =>  this.dogs.push({raza: i, img : resp.message, cantidad: 0, perrosPorRaza: [] })
           )
         }
       }
@@ -46,11 +45,12 @@ export class RazaListComponent implements OnInit, OnDestroy {
   agregar(index: number, raza: string){
     localStorage.setItem('raza', JSON.stringify(this.dogs));
     localStorage.setItem('razaSeleccionada', JSON.stringify(raza));
-    this.router.navigate(['new/',index]);
+    this.router.navigate(['new/',index]/* , { relativeTo: this.route } */);
   }
 
-  listar() {
-    this.router.navigate(['dogs']);
+  listar(index: number, raza: string) {
+    localStorage.setItem('razaSeleccionada', JSON.stringify(raza));
+    this.router.navigate(['dogs/',index]);
   }
 
   ngOnDestroy() {
