@@ -1,0 +1,24 @@
+<div class="row">
+  <div class="col-12">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Imagen de la Raza</th>
+          <th scope="col">Nombre de la Raza</th>
+          <th scope="col">Cantidad de perros inscritos</th>
+          <th scope="col">Acciones </th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let i of dogs; let index = index">
+        <th scope="row"><img src="{{i.img}}" style="max-height: 100px; max-width: 100px;" alt=""></th>
+        <td>{{ i.raza | uppercase}}</td>
+        <td>{{i.cantidad}}</td>
+        <td>
+          <button class="btn btn-primary" (click)="agregar(index, i.raza)">Agregar</button>
+          <button class="btn btn-success ml-2" (click)="listar()">Listar</button>
+        </td>
+      </tbody>
+    </table>
+  </div>
+</div>
+
